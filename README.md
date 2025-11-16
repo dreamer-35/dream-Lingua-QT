@@ -31,11 +31,11 @@
 
 **首页**
 
-<img src="docs/images/home.png" width="400" alt="首页"/>
+<img width="421" height="599" alt="首页" src="https://github.com/user-attachments/assets/756f6456-3b15-4525-8641-375b33dcd6c2" />
 
 **翻译页面**
 
-<img src="docs/images/translate.png" width="400" alt="翻译页面"/>
+<img width="421" height="601" alt="翻译" src="https://github.com/user-attachments/assets/e2d2944e-9cbd-4e38-8cd9-05bb173db8c5" />
 
 </div>
 
@@ -216,11 +216,11 @@ dream-Lingua-QT/
 
 **Home Page**
 
-<img src="docs/images/home.png" width="400" alt="Home Page"/>
+<img width="421" height="599" alt="Home Page" src="https://github.com/user-attachments/assets/756f6456-3b15-4525-8641-375b33dcd6c2" />
 
 **Translation Page**
 
-<img src="docs/images/translate.png" width="400" alt="Translation Page"/>
+<img width="421" height="601" alt="Translation Page" src="https://github.com/user-attachments/assets/e2d2944e-9cbd-4e38-8cd9-05bb173db8c5" />
 
 </div>
 
