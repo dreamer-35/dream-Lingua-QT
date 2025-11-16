@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dream Lingua QT</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Live2D Cubism Core SDK (必须最先加载!) -->
+  <script src="./live2dcubismcore.min.js" onload="console.log('✓ Cubism Core SDK 加载完成, Live2DCubismCore:', typeof Live2DCubismCore)"></script>
+  
+  <!-- PIXI.js -->
+  <script src="../node_modules/pixi.js/dist/pixi.min.js" onload="console.log('✓ PIXI.js 加载完成, 版本:', PIXI.VERSION)"></script>
+  
+  <!-- PIXI Live2D Display Plugin -->
+  <script src="../node_modules/pixi-live2d-display/dist/cubism4.min.js" onload="console.log('✓ Live2D 插件加载完成, PIXI.live2d:', typeof PIXI.live2d)"></script>
+  
+  <script>
+    // 验证所有库是否正确加载
+    setTimeout(() => {
+      console.log('=== 库加载状态验证 ===');
+      console.log('Live2DCubismCore:', typeof Live2DCubismCore !== 'undefined' ? '✓' : '✗');
+      console.log('PIXI:', typeof PIXI !== 'undefined' ? '✓ v' + PIXI.VERSION : '✗');
+      console.log('PIXI.live2d:', typeof PIXI !== 'undefined' && typeof PIXI.live2d !== 'undefined' ? '✓' : '✗');
+      
+      if (typeof PIXI !== 'undefined' && typeof PIXI.live2d !== 'undefined') {
+        console.log('PIXI.live2d 可用方法:', Object.keys(PIXI.live2d));
+        console.log('Live2DModel:', typeof PIXI.live2d.Live2DModel);
+      }
+    }, 100);
+  </script>
+</head>
+<body>
+  <!-- 主容器 -->
+  <div id="app">
+    <!-- 顶部标题栏 -->
+    <div id="header">
+      <div class="logo">
+        <span class="logo-icon">🌸</span>
+        <span class="logo-text">Dream Lingua</span>
+      </div>
+      <div class="header-right">
+        <div class="status-badge">
+          <span class="status-dot ready"></span>
+          <span class="status-text">就绪</span>
+        </div>
+        <div class="window-controls">
+          <button class="control-btn minimize" id="minimize-btn" title="最小化">−</button>
+          <button class="control-btn close" id="close-btn" title="关闭">×</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div id="main-content">
+      <!-- 首页 (默认显示) -->
+      <div id="home-page" class="page active">
+        <div class="hero-section">
+          <h1 class="hero-title">
+            <span class="gradient-text">Dream Lingua</span>
+          </h1>
+          <p class="hero-subtitle">智能翻译助手 · AI 驱动 · 本地隐私</p>
+          
+          <!-- 快捷键卡片 -->
+          <div class="shortcut-card">
+            <div class="shortcut-icon">⌨️</div>
+            <div class="shortcut-info">
+              <div class="shortcut-label">快捷键</div>
+              <div class="shortcut-key">
+                <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd>
+              </div>
+            </div>
+          </div>
+
+          <!-- 使用步骤 -->
+          <div class="steps">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-text">选中文本</div>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-text">按快捷键</div>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-text">查看翻译</div>
+            </div>
+          </div>
+
+          <!-- 特性标签 -->
+          <div class="features">
+            <div class="feature-tag">
+              <span class="tag-icon">🔒</span>
+              <span>本地AI</span>
+            </div>
+            <div class="feature-tag">
+              <span class="tag-icon">⚡</span>
+              <span>秒级响应</span>
+            </div>
+            <div class="feature-tag">
+              <span class="tag-icon">🌐</span>
+              <span>中英互译</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 角色展示区 -->
+        <div class="character-showcase">
+          <canvas id="home-live2d" width="200" height="200"></canvas>
+          <div class="character-bubble">
+            <p>你好呀!我是你的翻译小助手~</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 翻译页面 (翻译时显示) -->
+      <div id="translate-page" class="page">
+        <div class="translate-container">
+          <!-- 原文区 -->
+          <div class="text-panel source-panel">
+            <div class="panel-header">
+              <span class="panel-icon">📄</span>
+              <span class="panel-title">原文</span>
+            </div>
+            <div class="panel-content" id="source-text">
+              <div class="loading-placeholder">等待翻译...</div>
+            </div>
+          </div>
+
+          <!-- 分隔符 -->
+          <div class="divider-line">
+            <div class="divider-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 译文区 -->
+          <div class="text-panel target-panel">
+            <div class="panel-header">
+              <span class="panel-icon">✨</span>
+              <span class="panel-title">译文</span>
+            </div>
+            <div class="panel-content" id="target-text">
+              <div class="loading-placeholder">正在翻译中...</div>
+            </div>
+          </div>
+
+          <!-- 返回按钮 -->
+          <button class="back-btn" id="back-btn">
+            <span>← 返回首页</span>
+          </button>
+        </div>
+
+        <!-- 迷你角色 -->
+        <div class="mini-character">
+          <canvas id="translate-live2d" width="200" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部状态栏 -->
+    <div id="footer">
+      <div class="footer-status">
+        <span class="footer-icon">💡</span>
+        <span class="footer-text">选中文本按快捷键即可翻译</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 加载遮罩 -->
+  <div id="loading-overlay" class="hidden">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p class="loading-text">AI 翻译中...</p>
+    </div>
+  </div>
+
+  <script src="live2d-loader.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

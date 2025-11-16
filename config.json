@@ -1,0 +1,29 @@
+{
+  "ollama": {
+    "apiUrl": "http://127.0.0.1:11434/api/generate",
+    "model": "qwen3:0.6b",
+    "timeout": 30000,
+    "temperature": 0.3,
+    "top_p": 0.9
+  },
+  "app": {
+    "defaultLanguage": "中文",
+    "shortcut": "CommandOrControl+Shift+E",
+    "autoHideDelay": 5000,
+    "enableLive2D": false,
+    "characterImage": "./assets/character.png"
+  },
+  "window": {
+    "popup": {
+      "width": 400,
+      "height": 400,
+      "alwaysOnTop": true,
+      "transparent": true
+    },
+    "main": {
+      "width": 800,
+      "height": 600
+    }
+  }
+}
+

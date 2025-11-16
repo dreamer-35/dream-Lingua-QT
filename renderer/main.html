@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dream Lingua QT - 本地翻译助手</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 600px;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 40px;
+    }
+
+    .info-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    .info-item {
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      font-size: 1.1rem;
+    }
+
+    .info-item::before {
+      content: "✨";
+      margin-right: 10px;
+      font-size: 1.5rem;
+    }
+
+    .shortcut {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 15px;
+      border-radius: 8px;
+      margin: 0 5px;
+      font-family: "Monaco", "Courier New", monospace;
+      font-weight: bold;
+    }
+
+    .status {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+
+    .status.connected {
+      background: rgba(76, 175, 80, 0.3);
+    }
+
+    .status.disconnected {
+      background: rgba(244, 67, 54, 0.3);
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    .character {
+      font-size: 8rem;
+      animation: float 3s ease-in-out infinite;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="character">🌸</div>
+    <h1>Dream Lingua QT</h1>
+    <p class="subtitle">你的本地 AI 翻译助手</p>
+    
+    <div class="info-card">
+      <div class="info-item">
+        选中任意文本后按 <span class="shortcut">Cmd/Ctrl</span> + <span class="shortcut">Shift</span> + <span class="shortcut">E</span>
+      </div>
+      <div class="info-item">
+        即可唤起翻译悬浮窗
+      </div>
+      <div class="info-item">
+        使用 Ollama 本地模型,保护隐私
+      </div>
+      <div class="info-item">
+        可爱的动漫角色陪伴你学习
+      </div>
+    </div>
+  </div>
+
+  <div class="status" id="status">
+    检查 Ollama 连接中...
+  </div>
+
+  <script>
+    // 这里可以添加检查 Ollama 状态的逻辑
+    window.addEventListener('DOMContentLoaded', () => {
+      const statusEl = document.getElementById('status');
+      
+      // 模拟状态检查(实际应该通过 IPC 与主进程通信)
+      setTimeout(() => {
+        statusEl.textContent = '✅ Ollama 已连接';
+        statusEl.classList.add('connected');
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,105 @@
+{
+  "name": "dream-lingua-qt",
+  "version": "1.0.0",
+  "description": "基于 Electron + Ollama 的本地翻译桌面助手",
+  "main": "main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --enable-logging",
+    "build": "electron-builder",
+    "build:mac": "electron-builder --mac --x64",
+    "build:mac:arm64": "electron-builder --mac --arm64",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux",
+    "build:all": "electron-builder -mwl",
+    "rebuild": "electron-rebuild -f -w robotjs",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run rebuild"
+  },
+  "build": {
+    "appId": "com.dreamlingua.qt",
+    "productName": "Dream Lingua QT",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main/**/*",
+      "renderer/**/*",
+      "services/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "assets/icon.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "icon": "assets/icon.png",
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Utility"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "keywords": [
+    "electron",
+    "ollama",
+    "translation",
+    "ai",
+    "desktop-assistant"
+  ],
+  "author": "dreamer-35",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.13.3",
+    "electron-rebuild": "^3.2.9",
+    "node-abi": "^4.24.0"
+  },
+  "dependencies": {
+    "node-fetch": "^2.7.0",
+    "pixi-live2d-display": "^0.4.0",
+    "pixi.js": "^7.4.2",
+    "robotjs": "^0.6.0"
+  }
+}

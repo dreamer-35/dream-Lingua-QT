@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>翻译悬浮窗 (Live2D 版本)</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 400px;
+      height: 400px;
+      overflow: hidden;
+      background: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-app-region: drag;
+    }
+
+    #container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Live2D Canvas */
+    #live2d-canvas {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      width: 300px;
+      height: 300px;
+    }
+
+    /* 对话气泡 - 样式与 popup.html 相同 */
+    #speech-bubble {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 320px;
+      padding: 15px 20px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 10;
+      -webkit-app-region: no-drag;
+    }
+
+    #speech-bubble.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    #speech-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 15px solid rgba(255, 255, 255, 0.95);
+    }
+
+    .bubble-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    .bubble-content {
+      color: #333;
+      font-size: 1rem;
+      line-height: 1.6;
+      word-wrap: break-word;
+    }
+
+    .original-text {
+      padding: 8px 12px;
+      background: #f0f0f0;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      color: #666;
+      border-left: 3px solid #667eea;
+    }
+
+    .translation-text {
+      font-size: 1.1rem;
+      color: #000;
+      font-weight: 500;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .loading-dots {
+      display: inline-block;
+    }
+
+    .loading-dots span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin: 0 3px;
+      background: #667eea;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+
+    .loading-dots span:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+
+    .loading-dots span:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+
+    .error {
+      color: #f44336;
+      font-size: 0.9rem;
+      padding: 10px;
+      background: rgba(244, 67, 54, 0.1);
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+      background: rgba(0, 0, 0, 0.3);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      -webkit-app-region: no-drag;
+      z-index: 20;
+    }
+
+    .close-btn:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: scale(0);
+      }
+      40% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <button class="close-btn" id="closeBtn" title="关闭">✕</button>
+
+    <div id="speech-bubble">
+      <div class="bubble-header">
+        <span>🌸 Dream Lingua</span>
+        <span id="timestamp"></span>
+      </div>
+      <div class="bubble-content">
+        <div class="original-text" id="originalText"></div>
+        <div class="translation-text" id="translationText"></div>
+        <div class="loading" id="loading">
+          <div class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <p>翻译中...</p>
+        </div>
+        <div class="error" id="error" style="display: none;"></div>
+      </div>
+    </div>
+
+    <!-- Live2D Canvas -->
+    <canvas id="live2d-canvas"></canvas>
+  </div>
+
+  <!-- 引入 PIXI.js 和 Live2D 库 -->
+  <script src="../node_modules/pixi.js/dist/browser/pixi.min.js"></script>
+  <script src="../node_modules/pixi-live2d-display/dist/index.min.js"></script>
+  <script src="./live2d.js"></script>
+</body>
+</html>
+
