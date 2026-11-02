@@ -1,5 +1,6 @@
 const { globalShortcut, clipboard, screen } = require('electron')
 const translate = require('../services/translate')
+const history = require('./history')
 const robot = require('robotjs')
 
 let mainWindow = null
@@ -50,11 +51,10 @@ function registerShortcuts(win) {
       const result = await translate(text)
       console.log('翻译结果:', result)
 
+      const entry = history.add(text, result)
+
       // 发送翻译结果
-      mainWindow.webContents.send('show-translation', { 
-        text, 
-        result 
-      })
+      mainWindow.webContents.send('show-translation', entry)
       
       // 恢复原剪贴板内容
       setTimeout(() => {

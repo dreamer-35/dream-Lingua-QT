@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const { registerShortcuts, unregisterShortcuts } = require('./shortcuts')
+const history = require('./history')
+const translate = require('../services/translate')
 
 let popupWindow = null
 
@@ -60,6 +62,13 @@ app.whenReady().then(() => {
       popupWindow.hide() // 隐藏而不是关闭,保持应用运行
     }
   })
+
+  // 历史记录
+  ipcMain.handle('history:list', () => history.list())
+  ipcMain.handle('history:remove', (event, id) => history.remove(id))
+  ipcMain.handle('history:clear', () => history.clear())
+
+  translate.warmup()
 
   // macOS 需要激活窗口显示
   app.on('activate', () => {

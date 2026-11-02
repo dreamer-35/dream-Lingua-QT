@@ -5,6 +5,20 @@ All notable changes to Dream Lingua QT will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-10-30
+
+### ✨ 新增功能
+- **词条解释** - 单词/词组 (英文 ≤4 词、中文 ≤8 字且无句读) 在译文下方显示所属领域与 1-2 句解释，多义词分义项说明
+- **语音朗读** - 原文/译文面板新增 🔊 按钮，使用系统 TTS (婷婷 / Samantha)，再次点击停止
+- **本地历史记录** - 自动保存至 `userData/history.json` (上限 1000 条，同原文去重置顶)
+- **历史侧栏** - 标题栏 ☰ 按钮打开 (默认隐藏)，支持搜索、回看、单条删除、清空
+
+### 🔧 改进
+- **翻译模型升级** - 默认 `qwen3-vl:8b-instruct`，按 `qwen3:8b` → `qwen2.5:1.5b` 自动降级；启动预加载并常驻 30 分钟
+- **翻译鲁棒性** - 改用 `/api/chat` + JSON Schema 结构化输出，关闭思考模式；原文以 `<text>` 包裹防止指令注入；中译英残留中文时自动换模型重试
+- **语言检测** - 按中文字符占比判断，中英混排不再误判
+- **停留时长** - 翻译结果停留 3 分钟 (原 60 秒)、错误 15 秒 (原 5 秒)，鼠标悬停时暂停计时
+
 ## [1.0.0] - 2025-11-15
 
 ### 🎉 初始版本

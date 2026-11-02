@@ -26,5 +26,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   
   closeWindow: () => {
     ipcRenderer.send('close-window')
-  }
+  },
+
+  // 历史记录
+  listHistory: () => ipcRenderer.invoke('history:list'),
+  removeHistory: id => ipcRenderer.invoke('history:remove', id),
+  clearHistory: () => ipcRenderer.invoke('history:clear')
 })

@@ -35,6 +35,7 @@
     <!-- 顶部标题栏 -->
     <div id="header">
       <div class="logo">
+        <button class="control-btn history-toggle" id="history-btn" title="历史记录">☰</button>
         <span class="logo-icon">🌸</span>
         <span class="logo-text">Dream Lingua</span>
       </div>
@@ -123,6 +124,7 @@
             <div class="panel-header">
               <span class="panel-icon">📄</span>
               <span class="panel-title">原文</span>
+              <button class="speak-btn" id="speak-source-btn" title="朗读原文">🔊</button>
             </div>
             <div class="panel-content" id="source-text">
               <div class="loading-placeholder">等待翻译...</div>
@@ -143,6 +145,7 @@
             <div class="panel-header">
               <span class="panel-icon">✨</span>
               <span class="panel-title">译文</span>
+              <button class="speak-btn" id="speak-target-btn" title="朗读译文">🔊</button>
             </div>
             <div class="panel-content" id="target-text">
               <div class="loading-placeholder">正在翻译中...</div>
@@ -160,6 +163,17 @@
           <canvas id="translate-live2d" width="200" height="200"></canvas>
         </div>
       </div>
+
+      <!-- 历史记录侧栏 (默认隐藏) -->
+      <div id="history-backdrop"></div>
+      <aside id="history-sidebar">
+        <div class="history-header">
+          <span class="history-title">🕘 历史记录 <span id="history-count"></span></span>
+          <button class="history-clear" id="history-clear-btn" title="清空">清空</button>
+        </div>
+        <input id="history-search" type="search" placeholder="搜索原文 / 译文..." />
+        <ul id="history-list"></ul>
+      </aside>
     </div>
 
     <!-- 底部状态栏 -->

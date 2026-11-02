@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Dream Lingua QT](https://img.shields.io/badge/Dream%20Lingua%20QT-v1.0.0-ff69b4?style=for-the-badge)
+![Dream Lingua QT](https://img.shields.io/badge/Dream%20Lingua%20QT-v2.0.0-ff69b4?style=for-the-badge)
 ![Electron](https://img.shields.io/badge/Electron-28.3.3-47848F?style=for-the-badge&logo=electron)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
@@ -21,6 +21,9 @@
 - 🎯 **全局快捷键翻译** - 选中文本后按 `Cmd+Shift+E` (macOS) 或 `Ctrl+Shift+E` (Windows/Linux) 即可翻译
 - 💫 **Live2D 动态角色** - 精美的动画角色陪伴，支持多角色随机展示
 - 🔒 **完全本地化** - 基于 Ollama，所有数据在本地处理，保护隐私安全
+- 📚 **词条解释** - 单词/词组额外给出所属领域与简明解释，多义词分义项说明
+- 🔊 **语音朗读** - 一键朗读原文/译文 (系统 TTS，离线可用)
+- 🕘 **历史记录** - 本地保存翻译记录，侧栏随时查看、搜索、删除
 - 🎨 **现代化 UI** - 黑白粉配色方案，磨砂玻璃效果，流畅动画
 - ⚡ **零延迟** - 本地 AI 引擎，无需联网，即时响应
 - 🌍 **跨平台** - 支持 macOS (Intel/Apple Silicon)、Windows、Linux
@@ -58,7 +61,7 @@ curl -fsSL https://ollama.com/install.sh | sh
 2. **下载翻译模型**
 
 ```bash
-ollama pull qwen3:0.6b
+ollama pull qwen3-vl:8b-instruct
 ```
 
 3. **启动 Ollama 服务**
@@ -73,10 +76,10 @@ ollama serve
 
 前往 [Releases](https://github.com/dreamer-35/dream-Lingua-QT/releases) 页面下载对应平台的安装包：
 
-- macOS (Intel): `Dream-Lingua-QT-1.0.0.dmg`
-- macOS (Apple Silicon): `Dream-Lingua-QT-1.0.0-arm64.dmg`
-- Windows: `Dream-Lingua-QT-Setup-1.0.0.exe`
-- Linux: `Dream-Lingua-QT-1.0.0.AppImage`
+- macOS (Intel): `Dream-Lingua-QT-2.0.0.dmg`
+- macOS (Apple Silicon): `Dream-Lingua-QT-2.0.0-arm64.dmg`
+- Windows: `Dream-Lingua-QT-Setup-2.0.0.exe`
+- Linux: `Dream-Lingua-QT-2.0.0.AppImage`
 
 **方式二：从源码构建**
 
@@ -111,7 +114,8 @@ npm run build:all      # 所有平台
    - macOS: `Cmd+Shift+E`
    - Windows/Linux: `Ctrl+Shift+E`
 4. **查看结果** - 翻译结果将在弹窗中显示，并有可爱的 Live2D 角色陪伴
-5. **返回首页** - 翻译完成后自动返回首页，或点击"返回"按钮
+5. **返回首页** - 结果停留 3 分钟 (鼠标悬停时不计时) 后自动返回，或点击"返回"按钮
+6. **历史记录** - 点击左上角 ☰ 打开历史侧栏
 
 ### ⚙️ macOS 权限设置
 
@@ -138,7 +142,7 @@ npm run build:all      # 所有平台
 ### 🛠️ 技术栈
 
 - **框架**: Electron 28.3.3
-- **AI 引擎**: Ollama (qwen3:0.6b)
+- **AI 引擎**: Ollama (qwen3-vl:8b-instruct)
 - **渲染引擎**: PIXI.js v7.4.2
 - **Live2D**: pixi-live2d-display + Cubism 4 SDK
 - **自动化**: robotjs
@@ -151,6 +155,7 @@ dream-Lingua-QT/
 ├── main/                    # Electron 主进程
 │   ├── main.js             # 主进程入口
 │   ├── shortcuts.js        # 全局快捷键管理
+│   ├── history.js          # 本地历史记录
 │   └── preload.js          # 预加载脚本
 ├── renderer/               # 渲染进程
 │   ├── index.html          # 主页面
@@ -206,6 +211,9 @@ dream-Lingua-QT/
 - 🎯 **Global Hotkey Translation** - Select text and press `Cmd+Shift+E` (macOS) or `Ctrl+Shift+E` (Windows/Linux) to translate
 - 💫 **Live2D Dynamic Characters** - Beautiful animated characters with random display support
 - 🔒 **Fully Local** - Based on Ollama, all data processed locally for privacy protection
+- 📚 **Term Explanations** - Words/phrases come with domain tag and concise explanation
+- 🔊 **Text-to-Speech** - Read source/translation aloud (system TTS, offline)
+- 🕘 **History** - Local translation history with searchable sidebar
 - 🎨 **Modern UI** - Black, white, and pink color scheme with frosted glass effects and smooth animations
 - ⚡ **Zero Latency** - Local AI engine, no internet required, instant response
 - 🌍 **Cross-Platform** - Supports macOS (Intel/Apple Silicon), Windows, Linux
@@ -243,7 +251,7 @@ curl -fsSL https://ollama.com/install.sh | sh
 2. **Download Translation Model**
 
 ```bash
-ollama pull qwen3:0.6b
+ollama pull qwen3-vl:8b-instruct
 ```
 
 3. **Start Ollama Service**
@@ -258,10 +266,10 @@ ollama serve
 
 Visit [Releases](https://github.com/dreamer-35/dream-Lingua-QT/releases) page to download the installer for your platform:
 
-- macOS (Intel): `Dream-Lingua-QT-1.0.0.dmg`
-- macOS (Apple Silicon): `Dream-Lingua-QT-1.0.0-arm64.dmg`
-- Windows: `Dream-Lingua-QT-Setup-1.0.0.exe`
-- Linux: `Dream-Lingua-QT-1.0.0.AppImage`
+- macOS (Intel): `Dream-Lingua-QT-2.0.0.dmg`
+- macOS (Apple Silicon): `Dream-Lingua-QT-2.0.0-arm64.dmg`
+- Windows: `Dream-Lingua-QT-Setup-2.0.0.exe`
+- Linux: `Dream-Lingua-QT-2.0.0.AppImage`
 
 **Method 2: Build from Source**
 
@@ -296,7 +304,8 @@ npm run build:all      # All platforms
    - macOS: `Cmd+Shift+E`
    - Windows/Linux: `Ctrl+Shift+E`
 4. **View Results** - Translation results will appear in a popup with a cute Live2D character
-5. **Return Home** - Automatically returns to home page after translation, or click "Back" button
+5. **Return Home** - Result stays for 3 minutes (paused while hovering), or click "Back" button
+6. **History** - Click ☰ at the top-left to open the history sidebar
 
 ### ⚙️ macOS Permissions Setup
 
@@ -323,7 +332,7 @@ The app includes three beautiful Live2D characters that display randomly during 
 ### 🛠️ Tech Stack
 
 - **Framework**: Electron 28.3.3
-- **AI Engine**: Ollama (qwen3:0.6b)
+- **AI Engine**: Ollama (qwen3-vl:8b-instruct)
 - **Renderer**: PIXI.js v7.4.2
 - **Live2D**: pixi-live2d-display + Cubism 4 SDK
 - **Automation**: robotjs
@@ -336,6 +345,7 @@ dream-Lingua-QT/
 ├── main/                    # Electron main process
 │   ├── main.js             # Main process entry
 │   ├── shortcuts.js        # Global shortcut manager
+│   ├── history.js          # Local history storage
 │   └── preload.js          # Preload script
 ├── renderer/               # Renderer process
 │   ├── index.html          # Main page

@@ -405,7 +405,67 @@ body {
   color: #1e293b;
   overflow-y: auto;
   word-wrap: break-word;
+}
+
+.text-content {
   white-space: pre-wrap;
+}
+
+/* 单词/词组的领域解释 */
+.term-meta {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(255, 105, 180, 0.35);
+}
+
+.term-domain {
+  display: inline-block;
+  padding: 1px 8px;
+  margin-bottom: 6px;
+  background: rgba(255, 105, 180, 0.12);
+  color: #ff1493;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.term-explanation {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #475569;
+}
+
+#translate-page.term-mode .source-panel {
+  flex: 0 0 auto;
+}
+
+#translate-page.term-mode .source-panel .panel-content {
+  flex: none;
+}
+
+/* 朗读按钮 (层级高于迷你角色) */
+.speak-btn {
+  position: relative;
+  z-index: 2;
+  margin-left: auto;
+  width: 26px;
+  height: 22px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  -webkit-app-region: no-drag;
+}
+
+.speak-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.speak-btn.speaking {
+  background: rgba(255, 255, 255, 0.9);
+  animation: pulse 1s ease-in-out infinite;
 }
 
 .loading-placeholder {
@@ -471,6 +531,198 @@ body {
   height: 200px !important;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
   opacity: 0.9;
+}
+
+/* ========== 历史记录侧栏 ========== */
+.history-toggle {
+  color: #ff69b4;
+  background: rgba(255, 105, 180, 0.12);
+  -webkit-app-region: no-drag;
+}
+
+.history-toggle:hover {
+  background: rgba(255, 105, 180, 0.25);
+}
+
+#history-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 200;
+  -webkit-app-region: no-drag;
+}
+
+#history-backdrop.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+#history-sidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(26, 26, 26, 0.98);
+  border-right: 1px solid rgba(255, 192, 203, 0.2);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+  z-index: 201;
+  -webkit-app-region: no-drag;
+}
+
+#history-sidebar.open {
+  transform: translateX(0);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px 8px;
+}
+
+.history-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffb6d9;
+}
+
+#history-count {
+  color: #888;
+  font-weight: 500;
+}
+
+.history-clear {
+  border: none;
+  background: transparent;
+  color: #888;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.history-clear:hover {
+  color: #ef4444;
+}
+
+#history-search {
+  margin: 0 14px 8px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 105, 180, 0.25);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f0f0f0;
+  font-size: 12px;
+  outline: none;
+}
+
+#history-search:focus {
+  border-color: #ff69b4;
+}
+
+#history-list {
+  flex: 1;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0 8px 8px;
+}
+
+#history-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+#history-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 105, 180, 0.5);
+  border-radius: 2px;
+}
+
+.history-item {
+  position: relative;
+  padding: 8px 28px 8px 10px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.history-item:hover {
+  background: rgba(255, 105, 180, 0.12);
+}
+
+.history-source,
+.history-target {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-source {
+  font-size: 12px;
+  color: #f0f0f0;
+  font-weight: 600;
+}
+
+.history-target {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.history-tag {
+  display: inline-block;
+  margin-right: 4px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: rgba(255, 105, 180, 0.25);
+  color: #ff69b4;
+  font-size: 10px;
+}
+
+.history-meta {
+  margin-top: 2px;
+  font-size: 10px;
+  color: #666;
+}
+
+.history-delete {
+  position: absolute;
+  top: 8px;
+  right: 6px;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #666;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.history-item:hover .history-delete {
+  opacity: 1;
+}
+
+.history-delete:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.history-empty {
+  padding: 40px 0;
+  text-align: center;
+  font-size: 12px;
+  color: #666;
 }
 
 /* ========== 底部状态栏 ========== */

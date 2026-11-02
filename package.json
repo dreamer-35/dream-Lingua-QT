@@ -1,6 +1,6 @@
 {
   "name": "dream-lingua-qt",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "基于 Electron + Ollama 的本地翻译桌面助手",
   "main": "main/main.js",
   "scripts": {
