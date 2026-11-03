@@ -127,13 +127,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [2.1.0] - 2026-11-03
+## [Unreleased]
 
 ### 计划中的功能
 
 - [ ] 更多 Live2D 角色
-- [ ] 自定义快捷键
-- [ ] 历史翻译记录
+- [x] 自定义快捷键 (v2.0.0 / v2.1.0)
+- [x] 历史翻译记录 (v2.0.0)
 - [ ] 多语言界面
 - [ ] 翻译引擎切换（支持多个 Ollama 模型）
 - [ ] 主题自定义
