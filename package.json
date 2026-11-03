@@ -33,6 +33,7 @@
     "files": [
       "main/**/*",
       "renderer/**/*",
+      "!renderer/live2d/**/*.{cmo3,can3}",
       "services/**/*",
       "node_modules/**/*",
       "package.json"
