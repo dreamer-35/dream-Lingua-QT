@@ -31,5 +31,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // 历史记录
   listHistory: () => ipcRenderer.invoke('history:list'),
   removeHistory: id => ipcRenderer.invoke('history:remove', id),
-  clearHistory: () => ipcRenderer.invoke('history:clear')
+  clearHistory: () => ipcRenderer.invoke('history:clear'),
+
+  // 快捷键设置
+  getShortcut: () => ipcRenderer.invoke('shortcut:get'),
+  setShortcut: accelerator => ipcRenderer.invoke('shortcut:set', accelerator)
 })

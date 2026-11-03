@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **语音朗读** - 原文/译文面板新增 🔊 按钮，使用系统 TTS (婷婷 / Samantha)，再次点击停止
 - **本地历史记录** - 自动保存至 `userData/history.json` (上限 1000 条，同原文去重置顶)
 - **历史侧栏** - 标题栏 ☰ 按钮打开 (默认隐藏)，支持搜索、回看、单条删除、清空
+- **右键翻译 (macOS)** - 自动安装快速操作「用 Dream Lingua 翻译」，选中文本 → 右键 → 服务 即可翻译；经 `dreamlingua://` 协议传文本，不占用剪贴板，应用未运行时自动启动
+- **快捷键可切换** - 首页下拉选择 `⌘⇧E` / `⌘⇧1` / `⌘⇧2` / `⌃⌥T`，被占用时自动保留原快捷键并提示
 
 ### 🔧 改进
 - **翻译模型升级** - 默认 `qwen3-vl:8b-instruct`，按 `qwen3:8b` → `qwen2.5:1.5b` 自动降级；启动预加载并常驻 30 分钟

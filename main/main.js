@@ -1,10 +1,43 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
-const { registerShortcuts, unregisterShortcuts } = require('./shortcuts')
+const {
+  registerShortcuts,
+  unregisterShortcuts,
+  setShortcut,
+  getShortcutState,
+  translateText
+} = require('./shortcuts')
 const history = require('./history')
+const settings = require('./settings')
+const { installQuickAction, SERVICE_NAME } = require('./quickAction')
 const translate = require('../services/translate')
 
+const PROTOCOL = 'dreamlingua'
+
 let popupWindow = null
+let rendererReady = false
+// 渲染进程就绪前收到的右键翻译请求 (应用由服务菜单冷启动时)
+const pendingTexts = []
+
+/**
+ * 右键服务: dreamlingua://translate?text=...
+ * 必须在 ready 之前监听，否则冷启动时会丢失首个请求
+ */
+app.on('open-url', (event, url) => {
+  event.preventDefault()
+  try {
+    const { hostname, searchParams } = new URL(url)
+    const text = searchParams.get('text')
+    if (hostname !== 'translate' || !text) return
+    if (rendererReady) {
+      translateText(text)
+    } else {
+      pendingTexts.push(text)
+    }
+  } catch (error) {
+    console.warn('无法解析 URL:', url, error.message)
+  }
+})
 
 /**
  * 创建悬浮窗口
@@ -33,6 +66,8 @@ function createPopupWindow() {
   // 确保窗口在就绪后可以显示
   popupWindow.webContents.on('did-finish-load', () => {
     console.log('渲染进程加载完成')
+    rendererReady = true
+    pendingTexts.splice(0).forEach(translateText)
   })
 
   // 开发模式打开调试工具
@@ -67,6 +102,26 @@ app.whenReady().then(() => {
   ipcMain.handle('history:list', () => history.list())
   ipcMain.handle('history:remove', (event, id) => history.remove(id))
   ipcMain.handle('history:clear', () => history.clear())
+
+  // 快捷键设置
+  ipcMain.handle('shortcut:get', () => ({
+    ...getShortcutState(),
+    serviceName: SERVICE_NAME
+  }))
+  ipcMain.handle('shortcut:set', (event, accelerator) => {
+    if (!settings.SHORTCUT_PRESETS.includes(accelerator)) {
+      return { ok: false, ...getShortcutState() }
+    }
+    const ok = setShortcut(accelerator)
+    if (ok) settings.set({ shortcut: accelerator })
+    return { ok, ...getShortcutState() }
+  })
+
+  // 开发模式下协议会注册到 Electron 本体，只在打包版启用右键服务
+  if (app.isPackaged) {
+    app.setAsDefaultProtocolClient(PROTOCOL)
+    installQuickAction()
+  }
 
   translate.warmup()
 

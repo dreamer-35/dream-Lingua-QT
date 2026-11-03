@@ -110,9 +110,9 @@ npm run build:all      # 所有平台
 
 1. **启动应用** - 打开 Dream Lingua QT，你将看到欢迎页面
 2. **选中文本** - 在任意应用中选中需要翻译的文本
-3. **触发翻译** - 按下全局快捷键
-   - macOS: `Cmd+Shift+E`
-   - Windows/Linux: `Ctrl+Shift+E`
+3. **触发翻译** - 按下全局快捷键，或右键 → 服务 → **用 Dream Lingua 翻译** (macOS)
+   - 默认 `Cmd/Ctrl+Shift+E`，可在首页下拉切换为 `⌘⇧1` / `⌘⇧2` / `⌃⌥T`
+   - 右键服务也可在 系统设置 → 键盘 → 键盘快捷键 → 服务 中绑定任意快捷键
 4. **查看结果** - 翻译结果将在弹窗中显示，并有可爱的 Live2D 角色陪伴
 5. **返回首页** - 结果停留 3 分钟 (鼠标悬停时不计时) 后自动返回，或点击"返回"按钮
 6. **历史记录** - 点击左上角 ☰ 打开历史侧栏
@@ -300,9 +300,9 @@ npm run build:all      # All platforms
 
 1. **Launch App** - Open Dream Lingua QT to see the welcome page
 2. **Select Text** - Select text you want to translate in any application
-3. **Trigger Translation** - Press the global hotkey
-   - macOS: `Cmd+Shift+E`
-   - Windows/Linux: `Ctrl+Shift+E`
+3. **Trigger Translation** - Press the global hotkey, or right-click → Services → **用 Dream Lingua 翻译** (macOS)
+   - Default `Cmd/Ctrl+Shift+E`, switchable on the home page to `⌘⇧1` / `⌘⇧2` / `⌃⌥T`
+   - The Service can also be bound to any key in System Settings → Keyboard → Keyboard Shortcuts → Services
 4. **View Results** - Translation results will appear in a popup with a cute Live2D character
 5. **Return Home** - Result stays for 3 minutes (paused while hovering), or click "Back" button
 6. **History** - Click ☰ at the top-left to open the history sidebar

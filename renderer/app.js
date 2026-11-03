@@ -419,6 +419,38 @@ historyClearBtn.addEventListener('click', async () => {
   renderHistory()
 })
 
+// ========== 快捷键设置 ==========
+
+const shortcutKey = document.getElementById('shortcut-key')
+const shortcutSelect = document.getElementById('shortcut-select')
+
+function renderShortcut({ current, presets }) {
+  const preset = presets.find(p => p.accelerator === current)
+  const keys = preset ? preset.label.split(/\s*\+\s*|\s+/) : ['未设置']
+  shortcutKey.innerHTML = keys.map(k => `<kbd>${escapeHtml(k)}</kbd>`).join(' ')
+  shortcutSelect.innerHTML = presets
+    .map(
+      p =>
+        `<option value="${p.accelerator}"${p.accelerator === current ? ' selected' : ''}>${escapeHtml(p.label)}</option>`
+    )
+    .join('')
+}
+
+async function initShortcut() {
+  renderShortcut(await window.electronAPI.getShortcut())
+}
+
+shortcutSelect.addEventListener('change', async () => {
+  const state = await window.electronAPI.setShortcut(shortcutSelect.value)
+  renderShortcut(state)
+  updateFooter(
+    state.ok ? '✓ 快捷键已更新' : '✗ 该快捷键已被其他应用占用,请换一个'
+  )
+  setTimeout(() => updateFooter('💡 选中文本按快捷键即可翻译'), 3000)
+})
+
+initShortcut()
+
 /**
  * 返回按钮点击
  */
