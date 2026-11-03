@@ -177,12 +177,12 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px;
+  padding: 12px 16px;
   background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(255, 105, 180, 0.3);
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -209,34 +209,36 @@ body {
   font-weight: 600;
 }
 
-.shortcut-key {
+/* 三个功能横向并排，保持卡片高度不挤压下方角色 */
+#shortcut-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.shortcut-row {
   display: flex;
-  gap: 4px;
-  align-items: center;
-  font-size: 14px;
-  color: #000;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.shortcut-name {
+  font-size: 11px;
+  color: #666;
   font-weight: 600;
 }
 
-.shortcut-key kbd {
-  padding: 4px 8px;
-  background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
-  color: white;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  box-shadow: 0 2px 6px rgba(255, 105, 180, 0.4);
-}
-
 .shortcut-hint {
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: 10px;
   color: #999;
 }
 
-#shortcut-select {
-  align-self: center;
-  padding: 4px 6px;
+.shortcut-row select {
+  width: 100%;
+  text-align-last: center;
+  padding: 3px 4px;
   border: 1px solid rgba(255, 105, 180, 0.4);
   border-radius: 8px;
   background: #fff;
@@ -437,6 +439,18 @@ body {
   border-top: 1px dashed rgba(255, 105, 180, 0.35);
 }
 
+/* 解释模式: 没有译文，解释即主体 */
+.term-meta.standalone {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.term-meta.standalone .term-explanation {
+  font-size: 14px;
+  color: #1e293b;
+}
+
 .term-domain {
   display: inline-block;
   padding: 1px 8px;
@@ -455,11 +469,13 @@ body {
 }
 
 #translate-page.term-mode .source-panel {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  max-height: 40%;
 }
 
 #translate-page.term-mode .source-panel .panel-content {
-  flex: none;
+  flex: 0 1 auto;
+  min-height: 0;
 }
 
 /* 朗读按钮 (层级高于迷你角色) */

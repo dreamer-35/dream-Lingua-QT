@@ -9,7 +9,7 @@ const {
 } = require('./shortcuts')
 const history = require('./history')
 const settings = require('./settings')
-const { installQuickAction, SERVICE_NAME } = require('./quickAction')
+const { installQuickActions } = require('./quickAction')
 const translate = require('../services/translate')
 
 const PROTOCOL = 'dreamlingua'
@@ -17,10 +17,10 @@ const PROTOCOL = 'dreamlingua'
 let popupWindow = null
 let rendererReady = false
 // 渲染进程就绪前收到的右键翻译请求 (应用由服务菜单冷启动时)
-const pendingTexts = []
+const pendingRequests = []
 
 /**
- * 右键服务: dreamlingua://translate?text=...
+ * 右键服务: dreamlingua://translate?mode=explain&text=...
  * 必须在 ready 之前监听，否则冷启动时会丢失首个请求
  */
 app.on('open-url', (event, url) => {
@@ -28,11 +28,12 @@ app.on('open-url', (event, url) => {
   try {
     const { hostname, searchParams } = new URL(url)
     const text = searchParams.get('text')
+    const mode = searchParams.get('mode') || 'both'
     if (hostname !== 'translate' || !text) return
     if (rendererReady) {
-      translateText(text)
+      translateText(text, mode)
     } else {
-      pendingTexts.push(text)
+      pendingRequests.push([text, mode])
     }
   } catch (error) {
     console.warn('无法解析 URL:', url, error.message)
@@ -67,7 +68,7 @@ function createPopupWindow() {
   popupWindow.webContents.on('did-finish-load', () => {
     console.log('渲染进程加载完成')
     rendererReady = true
-    pendingTexts.splice(0).forEach(translateText)
+    pendingRequests.splice(0).forEach(([text, mode]) => translateText(text, mode))
   })
 
   // 开发模式打开调试工具
@@ -104,23 +105,20 @@ app.whenReady().then(() => {
   ipcMain.handle('history:clear', () => history.clear())
 
   // 快捷键设置
-  ipcMain.handle('shortcut:get', () => ({
-    ...getShortcutState(),
-    serviceName: SERVICE_NAME
-  }))
-  ipcMain.handle('shortcut:set', (event, accelerator) => {
-    if (!settings.SHORTCUT_PRESETS.includes(accelerator)) {
-      return { ok: false, ...getShortcutState() }
+  ipcMain.handle('shortcut:get', () => getShortcutState())
+  ipcMain.handle('shortcut:set', (event, action, accelerator) => {
+    if (!settings.isValidShortcut(action, accelerator)) {
+      return { ok: false, actions: getShortcutState() }
     }
-    const ok = setShortcut(accelerator)
-    if (ok) settings.set({ shortcut: accelerator })
-    return { ok, ...getShortcutState() }
+    const ok = setShortcut(action, accelerator)
+    if (ok) settings.setShortcutSetting(action, accelerator)
+    return { ok, actions: getShortcutState() }
   })
 
   // 开发模式下协议会注册到 Electron 本体，只在打包版启用右键服务
   if (app.isPackaged) {
     app.setAsDefaultProtocolClient(PROTOCOL)
-    installQuickAction()
+    installQuickActions()
   }
 
   translate.warmup()

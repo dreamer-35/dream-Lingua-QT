@@ -35,5 +35,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // 快捷键设置
   getShortcut: () => ipcRenderer.invoke('shortcut:get'),
-  setShortcut: accelerator => ipcRenderer.invoke('shortcut:set', accelerator)
+  setShortcut: (action, accelerator) =>
+    ipcRenderer.invoke('shortcut:set', action, accelerator)
 })

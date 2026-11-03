@@ -8,7 +8,7 @@
 			<key>NSMenuItem</key>
 			<dict>
 				<key>default</key>
-				<string>用 Dream Lingua 翻译</string>
+				<string>{{NAME}}</string>
 			</dict>
 			<key>NSMessage</key>
 			<string>runWorkflowAsService</string>

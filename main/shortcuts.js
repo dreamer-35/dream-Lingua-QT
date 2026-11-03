@@ -5,7 +5,8 @@ const settings = require('./settings')
 const robot = require('robotjs')
 
 let mainWindow = null
-let currentAccelerator = null
+// action → 当前已注册的 accelerator ('' 表示关闭)
+const registered = {}
 
 /**
  * 注册全局快捷键 (使用用户设置中的组合键)
@@ -13,45 +14,60 @@ let currentAccelerator = null
  */
 function registerShortcuts(win) {
   mainWindow = win
-  const { shortcut } = settings.get()
-  if (!setShortcut(shortcut)) {
-    console.error(`快捷键 ${shortcut} 注册失败,可能已被其他应用占用`)
+  const { shortcuts } = settings.get()
+  for (const [action, accelerator] of Object.entries(shortcuts)) {
+    if (!setShortcut(action, accelerator)) {
+      console.error(`快捷键 ${accelerator} 注册失败,可能已被其他应用占用`)
+    }
   }
 }
 
+function register(action, accelerator) {
+  return globalShortcut.register(accelerator, () => translateSelection(action))
+}
+
 /**
- * 切换快捷键，注册失败时保留原快捷键
+ * 切换某个功能的快捷键，注册失败时保留原快捷键
  * @returns {boolean} 是否注册成功
  */
-function setShortcut(accelerator) {
-  if (accelerator === currentAccelerator) return true
-  if (currentAccelerator) globalShortcut.unregister(currentAccelerator)
+function setShortcut(action, accelerator) {
+  const previous = registered[action] || ''
+  if (accelerator === previous && accelerator) return true
+  if (previous) globalShortcut.unregister(previous)
 
-  const ok = globalShortcut.register(accelerator, translateSelection)
+  const ok = !accelerator || register(action, accelerator)
   if (ok) {
-    currentAccelerator = accelerator
-    console.log(`快捷键 ${accelerator} 注册成功!`)
-  } else if (currentAccelerator) {
-    globalShortcut.register(currentAccelerator, translateSelection)
+    registered[action] = accelerator
+    if (accelerator) console.log(`快捷键 ${accelerator} (${action}) 注册成功!`)
+  } else if (previous) {
+    register(action, previous)
   }
   return ok
 }
 
 function getShortcutState() {
-  return {
-    current: currentAccelerator,
-    presets: settings.SHORTCUT_PRESETS.map(accelerator => ({
-      accelerator,
-      label: settings.formatAccelerator(accelerator)
-    }))
-  }
+  return Object.entries(settings.SHORTCUT_ACTIONS).map(
+    ([action, { label, presets }]) => ({
+      action,
+      label,
+      current: registered[action] || '',
+      options: [...presets, ''].map(accelerator => ({
+        accelerator,
+        label:
+          settings.formatAccelerator(accelerator) +
+          (settings.CONFLICT_HINTS[accelerator]
+            ? ` (${settings.CONFLICT_HINTS[accelerator]})`
+            : '')
+      }))
+    })
+  )
 }
 
 /**
- * 快捷键触发: 模拟复制拿到选中文本后翻译
+ * 快捷键触发: 模拟复制拿到选中文本后处理
  */
-async function translateSelection() {
-  console.log('快捷键触发!')
+async function translateSelection(mode) {
+  console.log(`快捷键触发! (${mode})`)
 
   // 保存当前剪贴板内容
   const previousClipboard = clipboard.readText()
@@ -75,7 +91,7 @@ async function translateSelection() {
     return
   }
 
-  await translateText(text)
+  await translateText(text, mode)
 
   // 恢复原剪贴板内容
   setTimeout(() => {
@@ -86,22 +102,23 @@ async function translateSelection() {
 }
 
 /**
- * 翻译指定文本并展示 (快捷键 / 右键服务共用)
+ * 翻译 / 解释指定文本并展示 (快捷键 / 右键服务共用)
+ * @param {'translate'|'explain'|'both'} mode
  */
-async function translateText(text) {
+async function translateText(text, mode = 'both') {
   text = text.trim()
   if (!text) return
-  console.log('待翻译文本:', text)
+  console.log(`待处理文本 (${mode}):`, text)
 
   // 显示窗口在鼠标附近
   showWindowNearCursor()
 
   // 发送加载状态
-  mainWindow.webContents.send('translation-loading', { text })
+  mainWindow.webContents.send('translation-loading', { text, mode })
 
   try {
     // 调用翻译服务
-    const result = await translate(text)
+    const result = await translate(text, mode)
     console.log('翻译结果:', result)
 
     const entry = history.add(text, result)
@@ -112,6 +129,7 @@ async function translateText(text) {
     console.error('翻译失败:', error)
     mainWindow.webContents.send('translation-error', {
       text,
+      mode,
       error: error.message
     })
   }

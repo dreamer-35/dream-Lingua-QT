@@ -20,6 +20,14 @@ const historyCount = document.getElementById('history-count')
 const historySearch = document.getElementById('history-search')
 const historyClearBtn = document.getElementById('history-clear-btn')
 
+const targetTitle = document.getElementById('target-title')
+
+const MODE_LABELS = {
+  translate: '翻译',
+  explain: '解释',
+  both: '翻译+解释'
+}
+
 // 翻译结果停留时长 (鼠标悬停在翻译页时暂停计时)
 const RESULT_STAY_MS = 3 * 60 * 1000
 const ERROR_STAY_MS = 15 * 1000
@@ -119,13 +127,23 @@ translatePage.addEventListener('mouseleave', () => {
  */
 function renderEntry(entry) {
   currentEntry = entry
-  // 词条模式: 原文面板收缩，把空间留给译文 + 解释
-  translatePage.classList.toggle('term-mode', entry.type === 'term')
   sourceText.innerHTML = `<div class="text-content">${escapeHtml(entry.text)}</div>`
 
-  let html = `<div class="text-content">${escapeHtml(entry.translation)}</div>`
-  if (entry.type === 'term' && (entry.domain || entry.explanation)) {
-    html += '<div class="term-meta">'
+  const hasTranslation = !!entry.translation
+  const hasExplanation = !!(entry.domain || entry.explanation)
+  // 词条或带解释时原文面板收缩，把空间留给译文 + 解释
+  translatePage.classList.toggle(
+    'term-mode',
+    entry.type === 'term' || hasExplanation
+  )
+  targetTitle.textContent =
+    hasTranslation && hasExplanation ? '译文 · 解释' : hasTranslation ? '译文' : '解释'
+
+  let html = hasTranslation
+    ? `<div class="text-content">${escapeHtml(entry.translation)}</div>`
+    : ''
+  if (hasExplanation) {
+    html += `<div class="term-meta${hasTranslation ? '' : ' standalone'}">`
     if (entry.domain) {
       html += `<span class="term-domain">${escapeHtml(entry.domain)}</span>`
     }
@@ -160,9 +178,12 @@ window.electronAPI.onTranslationLoading(data => {
   console.log('🎲 触发翻译,切换到翻译页并随机加载新角色...')
   enterTranslatePage()
 
+  const modeLabel = MODE_LABELS[data.mode] || '翻译'
+  targetTitle.textContent = data.mode === 'explain' ? '解释' : '译文'
+
   // 更新状态
-  updateStatus('translating', '翻译中')
-  updateFooter('⏳ AI 正在翻译...')
+  updateStatus('translating', `${modeLabel}中`)
+  updateFooter(`⏳ AI 正在${modeLabel}...`)
 
   // 显示加载动画
   loadingOverlay.classList.remove('hidden')
@@ -186,7 +207,7 @@ window.electronAPI.onShowTranslation(entry => {
 
   // 更新状态
   updateStatus('ready', '完成')
-  updateFooter(`✓ 翻译完成 · ${entry.model}`)
+  updateFooter(`✓ ${MODE_LABELS[entry.mode] || '翻译'}完成 · ${entry.model}`)
 
   renderEntry(entry)
   refreshHistory()
@@ -214,7 +235,7 @@ window.electronAPI.onTranslationError(data => {
 
   // 更新状态
   updateStatus('error', '错误')
-  updateFooter('✗ 翻译失败')
+  updateFooter(`✗ ${MODE_LABELS[data.mode] || '翻译'}失败`)
 
   // 显示错误信息
   sourceText.innerHTML = `<div class="text-content">${escapeHtml(data.text)}</div>`
@@ -316,7 +337,12 @@ function stopSpeaking() {
 
 speakTargetBtn.addEventListener('click', () => {
   if (!currentEntry) return
-  speak(currentEntry.translation, currentEntry.targetLang, speakTargetBtn)
+  // 解释模式没有译文，朗读中文解释
+  if (currentEntry.translation) {
+    speak(currentEntry.translation, currentEntry.targetLang, speakTargetBtn)
+  } else {
+    speak(currentEntry.explanation, 'zh', speakTargetBtn)
+  }
 })
 
 speakSourceBtn.addEventListener('click', () => {
@@ -336,13 +362,20 @@ function formatTime(ts) {
   return `${d.getMonth() + 1}/${d.getDate()} ${time}`
 }
 
+function historyTags(e) {
+  const tags = []
+  if (e.mode === 'explain') tags.push('解')
+  if (e.type === 'term') tags.push('词')
+  return tags.map(t => `<span class="history-tag">${t}</span>`).join('')
+}
+
 function renderHistory() {
   const keyword = historySearch.value.trim().toLowerCase()
   const items = keyword
-    ? historyCache.filter(
-        e =>
-          e.text.toLowerCase().includes(keyword) ||
-          e.translation.toLowerCase().includes(keyword)
+    ? historyCache.filter(e =>
+        [e.text, e.translation, e.explanation].some(s =>
+          (s || '').toLowerCase().includes(keyword)
+        )
       )
     : historyCache
 
@@ -356,8 +389,8 @@ function renderHistory() {
   historyList.innerHTML = items
     .map(
       e => `<li class="history-item" data-id="${e.id}">
-  <div class="history-source">${e.type === 'term' ? '<span class="history-tag">词</span>' : ''}${escapeHtml(e.text)}</div>
-  <div class="history-target">${escapeHtml(e.translation)}</div>
+  <div class="history-source">${historyTags(e)}${escapeHtml(e.text)}</div>
+  <div class="history-target">${escapeHtml(e.translation || e.explanation || '')}</div>
   <div class="history-meta">${formatTime(e.createdAt)}</div>
   <button class="history-delete" title="删除">×</button>
 </li>`
@@ -421,35 +454,41 @@ historyClearBtn.addEventListener('click', async () => {
 
 // ========== 快捷键设置 ==========
 
-const shortcutKey = document.getElementById('shortcut-key')
-const shortcutSelect = document.getElementById('shortcut-select')
+const shortcutList = document.getElementById('shortcut-list')
 
-function renderShortcut({ current, presets }) {
-  const preset = presets.find(p => p.accelerator === current)
-  const keys = preset ? preset.label.split(/\s*\+\s*|\s+/) : ['未设置']
-  shortcutKey.innerHTML = keys.map(k => `<kbd>${escapeHtml(k)}</kbd>`).join(' ')
-  shortcutSelect.innerHTML = presets
+function renderShortcuts(actions) {
+  shortcutList.innerHTML = actions
     .map(
-      p =>
-        `<option value="${p.accelerator}"${p.accelerator === current ? ' selected' : ''}>${escapeHtml(p.label)}</option>`
+      ({ action, label, current, options }) => `<div class="shortcut-row">
+  <span class="shortcut-name">${escapeHtml(label)}</span>
+  <select data-action="${action}" title="更换${escapeHtml(label)}快捷键">${options
+    .map(
+      o =>
+        `<option value="${o.accelerator}"${o.accelerator === current ? ' selected' : ''}>${escapeHtml(o.label)}</option>`
+    )
+    .join('')}</select>
+</div>`
     )
     .join('')
 }
 
-async function initShortcut() {
-  renderShortcut(await window.electronAPI.getShortcut())
+async function initShortcuts() {
+  renderShortcuts(await window.electronAPI.getShortcut())
 }
 
-shortcutSelect.addEventListener('change', async () => {
-  const state = await window.electronAPI.setShortcut(shortcutSelect.value)
-  renderShortcut(state)
-  updateFooter(
-    state.ok ? '✓ 快捷键已更新' : '✗ 该快捷键已被其他应用占用,请换一个'
+shortcutList.addEventListener('change', async e => {
+  const select = e.target.closest('select')
+  if (!select) return
+  const { ok, actions } = await window.electronAPI.setShortcut(
+    select.dataset.action,
+    select.value
   )
+  renderShortcuts(actions)
+  updateFooter(ok ? '✓ 快捷键已更新' : '✗ 该快捷键已被其他应用占用,请换一个')
   setTimeout(() => updateFooter('💡 选中文本按快捷键即可翻译'), 3000)
 })
 
-initShortcut()
+initShortcuts()
 
 /**
  * 返回按钮点击

@@ -62,7 +62,7 @@
 					<string>text=$(cat)
 if [ -z "$text" ]; then exit 0; fi
 encoded=$(/usr/bin/osascript -l JavaScript -e 'function run(argv) { return encodeURIComponent(argv[0]) }' "$text")
-/usr/bin/open "dreamlingua://translate?text=$encoded"</string>
+/usr/bin/open "dreamlingua://translate?mode={{MODE}}&amp;text=$encoded"</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>

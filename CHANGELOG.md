@@ -5,6 +5,19 @@ All notable changes to Dream Lingua QT will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### ✨ 新增功能
+- **翻译 / 解释分离** - 三种模式各自独立快捷键 (首页下拉切换，可关闭)
+  - 翻译 (只出译文)：`⌘⇧1` (默认) / `⌘⇧2` / `⌘⇧3` / `⌃⌥T`
+  - 解释 / 理解 (中文讲解含义、关键概念、言外之意)：`⌘⇧8` (默认) / `⌘⇧9` / `⌘⇧0`
+  - 翻译 + 解释 (整句也附带解释)：`⌘⇧E` (默认) / `⌃⌥E`
+- **右键「用 Dream Lingua 解释」** - 新增解释服务；「用 Dream Lingua 翻译」对应翻译 + 解释
+
+### 🔧 改进
+- 有解释内容时原文面板自动收缩，留出空间给解释
+- 历史记录按「原文 + 模式」去重，解释记录带「解」标签，搜索覆盖解释内容
+
 ## [2.0.0] - 2026-10-30
 
 ### ✨ 新增功能

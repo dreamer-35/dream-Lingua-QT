@@ -28,11 +28,12 @@ function save() {
 }
 
 /**
- * 新增记录 (同一原文只保留最新一条，置顶)
+ * 新增记录 (同一原文 + 同一模式只保留最新一条，置顶)
  */
 function add(text, result) {
   load()
-  entries = entries.filter(e => e.text !== text)
+  const mode = result.mode || 'both'
+  entries = entries.filter(e => !(e.text === text && (e.mode || 'both') === mode))
   const entry = {
     id: crypto.randomUUID(),
     text,

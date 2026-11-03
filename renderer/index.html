@@ -63,13 +63,11 @@
           
           <!-- 快捷键卡片 -->
           <div class="shortcut-card">
-            <div class="shortcut-icon">⌨️</div>
             <div class="shortcut-info">
-              <div class="shortcut-label">快捷键</div>
-              <div class="shortcut-key" id="shortcut-key"></div>
-              <div class="shortcut-hint">或 右键 → 服务 → 用 Dream Lingua 翻译</div>
+              <div class="shortcut-label">⌨️ 快捷键</div>
+              <div id="shortcut-list"></div>
+              <div class="shortcut-hint">或 右键 → 服务 → 用 Dream Lingua 翻译 / 解释</div>
             </div>
-            <select id="shortcut-select" title="更换快捷键"></select>
           </div>
 
           <!-- 使用步骤 -->
@@ -144,7 +142,7 @@
           <div class="text-panel target-panel">
             <div class="panel-header">
               <span class="panel-icon">✨</span>
-              <span class="panel-title">译文</span>
+              <span class="panel-title" id="target-title">译文</span>
               <button class="speak-btn" id="speak-target-btn" title="朗读译文">🔊</button>
             </div>
             <div class="panel-content" id="target-text">
