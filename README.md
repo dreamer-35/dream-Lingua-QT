@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Dream Lingua QT](https://img.shields.io/badge/Dream%20Lingua%20QT-v2.0.0-ff69b4?style=for-the-badge)
+![Dream Lingua QT](https://img.shields.io/badge/Dream%20Lingua%20QT-v2.1.0-ff69b4?style=for-the-badge)
 ![Electron](https://img.shields.io/badge/Electron-28.3.3-47848F?style=for-the-badge&logo=electron)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
@@ -76,10 +76,10 @@ ollama serve
 
 前往 [Releases](https://github.com/dreamer-35/dream-Lingua-QT/releases) 页面下载对应平台的安装包：
 
-- macOS (Intel): `Dream-Lingua-QT-2.0.0.dmg`
-- macOS (Apple Silicon): `Dream-Lingua-QT-2.0.0-arm64.dmg`
-- Windows: `Dream-Lingua-QT-Setup-2.0.0.exe`
-- Linux: `Dream-Lingua-QT-2.0.0.AppImage`
+- macOS (Intel): `Dream-Lingua-QT-2.1.0.dmg`
+- macOS (Apple Silicon): `Dream-Lingua-QT-2.1.0-arm64.dmg`
+- Windows: `Dream-Lingua-QT-Setup-2.1.0.exe`
+- Linux: `Dream-Lingua-QT-2.1.0.AppImage`
 
 **方式二：从源码构建**
 
@@ -267,10 +267,10 @@ ollama serve
 
 Visit [Releases](https://github.com/dreamer-35/dream-Lingua-QT/releases) page to download the installer for your platform:
 
-- macOS (Intel): `Dream-Lingua-QT-2.0.0.dmg`
-- macOS (Apple Silicon): `Dream-Lingua-QT-2.0.0-arm64.dmg`
-- Windows: `Dream-Lingua-QT-Setup-2.0.0.exe`
-- Linux: `Dream-Lingua-QT-2.0.0.AppImage`
+- macOS (Intel): `Dream-Lingua-QT-2.1.0.dmg`
+- macOS (Apple Silicon): `Dream-Lingua-QT-2.1.0-arm64.dmg`
+- Windows: `Dream-Lingua-QT-Setup-2.1.0.exe`
+- Linux: `Dream-Lingua-QT-2.1.0.AppImage`
 
 **Method 2: Build from Source**
 
